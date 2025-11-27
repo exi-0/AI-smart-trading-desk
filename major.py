@@ -164,15 +164,18 @@ with st.sidebar:
 # ===============================
 @st.cache_data(show_spinner=True)
 def load_data(sym, start, end):
-    df = yf.download(sym, start=start, end=end)
+    try:
+        df = yf.download(sym, start=start, end=end, progress=False)
+    except Exception:
+        return pd.DataFrame()   # crash-safe
+
+    # Retry if empty (Yahoo bug)
+    if df.empty:
+        df = yf.download(sym, start=start, end=end, progress=False, threads=False)
+
     df.reset_index(inplace=True)
     return df
 
-data = load_data(symbol, start_date, end_date)
-
-if data.empty:
-    st.error("❌ Could not fetch data. Check stock symbol or date range.")
-    st.stop()
 
 # ===============================
 # BASIC MARKET SNAPSHOT
@@ -499,5 +502,6 @@ if use_ai_verdict:
 
 
 #streamlit run major.py
+
 
 
