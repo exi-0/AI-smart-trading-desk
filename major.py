@@ -22,11 +22,13 @@ import google.generativeai as genai
 # ===============================
 # ENV + GEMINI SETUP
 # ===============================
-load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+import os
+
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
-    raise ValueError("❌ Missing GEMINI_API_KEY in .env file")
+    raise ValueError("❌ Missing GEMINI_API_KEY ENV variable")
+
 
 genai.configure(api_key=GEMINI_API_KEY)
 GEMINI_MODEL = "gemini-2.5-flash"
@@ -490,3 +492,4 @@ if use_ai_verdict:
 
 
 #streamlit run major.py
+
