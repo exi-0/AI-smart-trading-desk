@@ -22,12 +22,19 @@ import google.generativeai as genai
 # ===============================
 # ENV + GEMINI SETUP
 # ===============================
-import os
+import streamlit as st
+import google.generativeai as genai
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+# ===== STREAMLIT CLOUD SECRET HANDLING =====
+GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
-    raise ValueError("❌ Missing GEMINI_API_KEY ENV variable")
+    st.error("❌ GEMINI_API_KEY missing in Streamlit Secrets!")
+    st.stop()
+
+genai.configure(api_key=GEMINI_API_KEY)
+GEMINI_MODEL = "gemini-2.5-flash"
+
 
 
 genai.configure(api_key=GEMINI_API_KEY)
@@ -492,4 +499,5 @@ if use_ai_verdict:
 
 
 #streamlit run major.py
+
 
