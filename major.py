@@ -166,15 +166,31 @@ with st.sidebar:
 def load_data(sym, start, end):
     try:
         df = yf.download(sym, start=start, end=end, progress=False)
-    except Exception:
-        return pd.DataFrame()   # crash-safe
+    except Exception as e:
+        st.error(f"Error fetching data: {e}")
+        return None
 
-    # Retry if empty (Yahoo bug)
-    if df.empty:
-        df = yf.download(sym, start=start, end=end, progress=False, threads=False)
+    # Retry if empty
+    if df is None or df.empty:
+        try:
+            df = yf.Ticker(sym).history(period="max")
+        except Exception as e:
+            st.error(f"Fallback fetch failed: {e}")
+            return None
+
+    if df is None or df.empty:
+        return None
 
     df.reset_index(inplace=True)
     return df
+data = load_data(symbol, start_date, end_date)
+
+if data is None or data.empty:
+    st.error("❌ Could not fetch data. Please try:")
+    st.markdown("- Different stock symbol (AAPL / MSFT / META / TSLA)")
+    st.markdown("- Shorter date range (e.g., 2018–2024)")
+    st.stop()
+
 
 
 # ===============================
@@ -502,6 +518,7 @@ if use_ai_verdict:
 
 
 #streamlit run major.py
+
 
 
 
