@@ -146,7 +146,7 @@ with st.sidebar:
 
     model_choice = st.selectbox(
         "ML model",
-        ["Linear Regression", "Random Forest", "SVR", "LSTM"]
+        ["LSTM", "Linear Regression", "Random Forest", "SVR"]
     )
 
     future_year = st.number_input(
@@ -518,6 +518,7 @@ if use_ai_verdict:
 
 
 #streamlit run major.py
+
 
 
 
